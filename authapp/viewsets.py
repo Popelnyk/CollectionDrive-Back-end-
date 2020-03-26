@@ -1,4 +1,5 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -6,18 +7,18 @@ from authapp.models import CustomUser
 from authapp.serializers import CustomUserSerializer
 
 
-class CustomUserViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = CustomUser.objects.all()
-        serializer = CustomUserSerializer(queryset, many=True)
-        return Response(serializer.data)
+class CustomUserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
 
-    def retrieve(self, request, pk=None):
-        queryset = CustomUser.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = CustomUserSerializer(user)
-        return Response(serializer.data)
-
-    def get_permissions(self):
-        permission_classes = [permissions.IsAuthenticated]
-        return [permission() for permission in permission_classes]
+    def create(self, request, *args, **kwargs):
+        serializer = CustomUserSerializer(data=request.data)
+        if serializer.is_valid() and request.data['password']:
+            user = CustomUser.objects.create_user(username=request.data['username'],
+                                                  email=request.data['email'],
+                                                  password=request.data['password'])
+            return Response({'id': user.id, 'username': user.username, 'email': user.email})
+        elif not request.data['password']:
+            return Response(data={'Error': 'The Password must be set'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
