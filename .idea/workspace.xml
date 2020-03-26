@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4b3e2888-3fb6-4cf5-80ba-3eddcd0ae018" name="Default Changelist" comment="" />
+    <list default="true" id="4b3e2888-3fb6-4cf5-80ba-3eddcd0ae018" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CollectionDriveBackEnd/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/CollectionDriveBackEnd/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CollectionDriveBackEnd/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/CollectionDriveBackEnd/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authapp/managers.py" beforeDir="false" afterPath="$PROJECT_DIR$/authapp/managers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authapp/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/authapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/authapp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authapp/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/authapp/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/authapp/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authapp/viewsets.py" beforeDir="false" afterPath="$PROJECT_DIR$/authapp/viewsets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
