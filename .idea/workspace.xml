@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b3e2888-3fb6-4cf5-80ba-3eddcd0ae018" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/CollectionDriveBackEnd/permissions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/authapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authapp/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/authapp/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/authapp/viewsets.py" beforeDir="false" afterPath="$PROJECT_DIR$/authapp/viewsets.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -123,7 +120,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585249901040</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="common password reset validation">
+      <created>1585307369915</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1585307369915</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -144,6 +148,7 @@
     <MESSAGE value="com2" />
     <MESSAGE value="--changing allauth into custom jwt auth" />
     <MESSAGE value="validation for user creation" />
-    <option name="LAST_COMMIT_MESSAGE" value="validation for user creation" />
+    <MESSAGE value="common password reset validation" />
+    <option name="LAST_COMMIT_MESSAGE" value="common password reset validation" />
   </component>
 </project>

@@ -1,3 +1,4 @@
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -17,7 +18,8 @@ class CustomUserViewSet(viewsets.ModelViewSet):
             user = CustomUser.objects.create_user(username=request.data['username'],
                                                   email=request.data['email'],
                                                   password=request.data['password'])
-            return Response({'id': user.id, 'username': user.username, 'email': user.email})
+            return Response({'id': user.id, 'username': user.username, 'email': user.email},
+                            status=status.HTTP_201_CREATED)
         elif not request.data['password']:
             return Response(data={'Error': 'The Password must be set'}, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -26,11 +28,13 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[IsOwnerOfUserOrReadOnly])
     def set_password(self, request, pk):
         user = self.get_object()
-        if request.data['password1'] == request.data['password2'] and len(request.data['password1']) >= 8:
-            user.set_password(request.data['password1'])
-            return Response(data='Password was successfully set', status=status.HTTP_202_ACCEPTED)
-        elif len(request.data['password1']) < 8:
-            return Response(data='Password must have at least 8 symbols', status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response(data='Passwords do not match', status=status.HTTP_400_BAD_REQUEST)
-
+        try:
+            if request.data['password1'] == request.data['password2'] and len(request.data['password1']) >= 8:
+                user.set_password(request.data['password1'])
+                return Response(data={'message': 'Password was successfully set'}, status=status.HTTP_202_ACCEPTED)
+            elif len(request.data['password1']) < 8:
+                return Response(data={'error': 'Password must have at least 8 symbols'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(data={'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+        except MultiValueDictKeyError as e:
+            return Response(data={'error': 'Wrong fields in request'})
