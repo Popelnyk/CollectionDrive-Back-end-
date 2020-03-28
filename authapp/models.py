@@ -6,9 +6,7 @@ from authapp.managers import CustomUserManager
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=60, unique=True, null=True)
-    email = models.EmailField(_('email address'), unique=True)
-    spouse_name = models.CharField(blank=True, max_length=100)
-    date_of_birth = models.DateField(blank=True, null=True)
+    email = models.EmailField(_('email address'), max_length=150, unique=True)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
