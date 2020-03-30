@@ -30,19 +30,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myapp.apps.MyappConfig',
     'authapp.apps.AuthappConfig',
+    'django.contrib.sites',
 
-
-    #all for auth
     'rest_framework',
+
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'rest_auth',
-
-    'django.contrib.sites',
+    'rest_auth.registration',
     'allauth',
     'allauth.account',
-    'rest_auth.registration',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     ###
+
+    'corsheaders',
 
 
 ]
@@ -52,12 +54,19 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
 }
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': [
                 'rest_framework_simplejwt.authentication.JWTAuthentication',
+                'rest_framework.authentication.SessionAuthentication',
                 'rest_framework.authentication.BasicAuthentication',
         ],
 }
+
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'authapp.serializers.CustomUserSerializer',
@@ -77,7 +86,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+
+    ###
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'CollectionDriveBackEnd.urls'
 
