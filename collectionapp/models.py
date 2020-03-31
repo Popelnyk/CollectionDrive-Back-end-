@@ -20,3 +20,8 @@ class Theme(models.Model):
     collection = models.ManyToManyField(Collection)
     description = models.CharField(max_length=50)
 
+
+class Item(models.Model):
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+    # TODO: Tags

@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b3e2888-3fb6-4cf5-80ba-3eddcd0ae018" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/collectionapp/validators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/collectionapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectionapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectionapp/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectionapp/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectionapp/viewsets.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectionapp/viewsets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/collectionapp/validators.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectionapp/validators.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -158,7 +156,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585694387470</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="+item fields">
+      <created>1585697789851</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1585697789851</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,6 +189,7 @@
     <MESSAGE value="password set updated&#10;username set updated&#10;user creation updated&#10;ModelViewSet -&gt; mixins" />
     <MESSAGE value="google auth" />
     <MESSAGE value="collection creation without item fields" />
-    <option name="LAST_COMMIT_MESSAGE" value="collection creation without item fields" />
+    <MESSAGE value="+item fields" />
+    <option name="LAST_COMMIT_MESSAGE" value="+item fields" />
   </component>
 </project>
