@@ -16,7 +16,7 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         serializer.save(owner=self.request.user)
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action == 'create' or self.action == 'update' or self.action == 'delete':
             permission_classes = [permissions.IsAuthenticated]
         else:
             permission_classes = [permissions.IsAuthenticatedOrReadOnly]
