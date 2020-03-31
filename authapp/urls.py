@@ -14,5 +14,6 @@ urlpatterns = router.urls
 urlpatterns += [
     url(r'^token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     url(r'^token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
-    url(r'^google/', views.GoogleLogin.as_view(), name='facebook_login'),
+    url(r'^google/', views.GoogleLogin.as_view(), name='google_login'),
+    url(r'^facebook/', views.FacebookLogin.as_view(), name='facebook_login'),
 ]

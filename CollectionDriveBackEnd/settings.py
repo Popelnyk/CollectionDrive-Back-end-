@@ -28,9 +28,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
     'myapp.apps.MyappConfig',
     'authapp.apps.AuthappConfig',
-    'django.contrib.sites',
+    'collectionapp.apps.CollectionappConfig',
 
     'rest_framework',
 
@@ -42,11 +44,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
     ###
 
     'corsheaders',
-
-
 ]
 
 REST_USE_JWT = True
