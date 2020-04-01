@@ -8,6 +8,7 @@ from authapp.models import CustomUser
 class Collection(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    theme_name = models.CharField(max_length=50)
     description = models.CharField(max_length=500)
     creation_date = models.DateTimeField(auto_now_add=True)
     item_text_fields = models.CharField(max_length=200, null=True)

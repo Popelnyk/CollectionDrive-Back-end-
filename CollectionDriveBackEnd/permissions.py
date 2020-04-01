@@ -11,7 +11,7 @@ class IsOwnerOfUserOrReadOnly(permissions.BasePermission):
         return obj.id == request.user.id
 
 
-class IsOwnerOfCampaignOrReadonly(permissions.BasePermission):
+class IsOwnerOfCollectionOrReadonly(permissions.BasePermission):
     def has_permission(self, request, view):
         collection_id = view.kwargs['pk']
         collection = Collection.objects.get(id=collection_id)
