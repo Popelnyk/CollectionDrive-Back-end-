@@ -2,8 +2,8 @@ from rest_framework import viewsets, mixins, permissions, status
 from rest_framework.decorators import permission_classes
 from rest_framework.response import Response
 
-from collectionapp.models import Collection
-from collectionapp.serializers import CollectionSerializer
+from collectionapp.models import Collection, Item
+from collectionapp.serializers import CollectionSerializer, ItemSerializer
 
 
 class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -21,3 +21,10 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         else:
             permission_classes = [permissions.IsAuthenticatedOrReadOnly]
         return [permission() for permission in permission_classes]
+    
+
+class ItemViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                  mixins.RetrieveModelMixin, mixins.DestroyModelMixin,
+                  viewsets.GenericViewSet):
+    serializer_class = ItemSerializer
+    queryset = Item.objects.all()

@@ -47,3 +47,7 @@ class CollectionSerializer(serializers.ModelSerializer):
             theme.save()
 
         return collection
+
+
+class ItemSerializer(serializers.ModelSerializer):
+    pass

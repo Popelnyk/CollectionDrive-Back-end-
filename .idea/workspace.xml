@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="4b3e2888-3fb6-4cf5-80ba-3eddcd0ae018" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectionapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectionapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectionapp/validators.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectionapp/validators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CollectionDriveBackEnd/permissions.py" beforeDir="false" afterPath="$PROJECT_DIR$/CollectionDriveBackEnd/permissions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/collectionapp/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectionapp/serializers.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -163,7 +163,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585697789851</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="fix">
+      <created>1585699141921</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1585699141921</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -190,6 +197,7 @@
     <MESSAGE value="google auth" />
     <MESSAGE value="collection creation without item fields" />
     <MESSAGE value="+item fields" />
-    <option name="LAST_COMMIT_MESSAGE" value="+item fields" />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
 </project>

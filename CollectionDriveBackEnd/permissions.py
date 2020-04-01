@@ -1,5 +1,7 @@
 from rest_framework import permissions
 
+from collectionapp.models import Collection
+
 
 class IsOwnerOfUserOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -7,3 +9,11 @@ class IsOwnerOfUserOrReadOnly(permissions.BasePermission):
             return True
 
         return obj.id == request.user.id
+
+
+class IsOwnerOfCampaignOrReadonly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        collection_id = view.kwargs['pk']
+        collection = Collection.objects.get(id=collection_id)
+
+        return collection.owner == request.user
