@@ -50,7 +50,10 @@ class CollectionSerializer(serializers.ModelSerializer):
 
     def get_items(self, collection):
         items = Item.objects.filter(collection=collection)
-        return items
+        result = []
+        for item in items:
+            result.append({'name': item.name, 'collection_id': item.collection_id, 'fields': item.fields.context})
+        return result
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -58,4 +61,4 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ['id', 'collection', 'name']
+        fields = ['id', 'collection', 'name', 'fields']

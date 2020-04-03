@@ -25,4 +25,4 @@ class Theme(models.Model):
 class Item(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    # TODO: Tags
+    fields = JSONField(allow_null=True, default=None)
