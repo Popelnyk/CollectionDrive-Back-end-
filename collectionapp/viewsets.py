@@ -1,3 +1,6 @@
+from json import JSONDecodeError
+
+import jsonfield
 from rest_framework import viewsets, mixins, permissions, status
 from rest_framework.decorators import permission_classes, action
 from rest_framework.response import Response
@@ -27,11 +30,16 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
     @action(methods=['post'], detail=True, permission_classes=[IsOwnerOfCollectionOrReadonly])
     def create_item(self, request, pk=None):
         serializer = ItemSerializer(data=request.data)
-        if serializer.is_valid() and json.loads(request.data['fields']):
-            collection = Collection.objects.get(id=pk)
-            item = Item.objects.create(collection=collection, name=request.data['name'], fields=request.data['fields'])
-            return Response({'id': item.id, 'collection_id': collection.id, 'data': serializer.data},
-                            status=status.HTTP_201_CREATED)
+        if serializer.is_valid():
+            try:
+                json.loads(request.data['fields'])
+                collection = Collection.objects.get(id=pk)
+                item = Item.objects.create(collection=collection, name=request.data['name'],
+                                           fields=request.data['fields'])
+                return Response({'id': item.id, 'collection_id': collection.id, 'data': serializer.data},
+                                status=status.HTTP_201_CREATED)
+            except JSONDecodeError as e:
+                return Response('Incorrect <fields> atr in request', status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

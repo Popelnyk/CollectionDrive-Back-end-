@@ -56,8 +56,7 @@ class CollectionSerializer(serializers.ModelSerializer):
         for item in items:
             fields = item.fields
             if isinstance(fields, JSONString):
-                fields = json.loads(fields)
-                fields = [{key: value} for key, value in fields.items()]
+                fields = [{key: value} for key, value in json.loads(fields).items()]
                 pass
             else:
                 fields = []
