@@ -30,9 +30,9 @@ def validate_fields_from_request_to_fields_in_collection(collection, data):
                 return False, 'Incorrect type of {0} field, must be integer'.format(field_name)
 
         for field_name in item_bool_fields:
-            if not data[field_name]:
+            if data[field_name] != 0 and not data[field_name]:
                 return False, 'no {0} data in field for item'.format(field_name)
-            elif not isinstance(data[field_name], int) or not (data[field_name] == 0 or data[field_name] == 1):
+            elif not isinstance(data[field_name], int) or (data[field_name] != 0 and data[field_name] != 1):
                 return False, 'Incorrect type of {0} field, must be 1 or 0'.format(field_name)
 
         for field_name in item_date_fields:

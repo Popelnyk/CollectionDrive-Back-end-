@@ -13,13 +13,14 @@ from collectionapp.validators import validate_item_fields
 
 class CollectionSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    owner_id = serializers.ReadOnlyField(source='owner.id')
     items = serializers.SerializerMethodField()
 
     class Meta:
         model = Collection
-        creation_date = serializers.DateTimeField()
-        fields = ['id', 'owner', 'name', 'theme_name', 'description', 'item_text_fields', 'item_int_fields',
-                  'item_bool_fields', 'item_date_fields', 'items']
+        creation_date = serializers.DateTimeField(format='%Y-%m-%d')
+        fields = ['id', 'owner', 'owner_id', 'name', 'theme_name', 'description', 'creation_date',
+                  'item_text_fields', 'item_int_fields', 'item_bool_fields', 'item_date_fields', 'items']
 
     def to_representation(self, collection):
         serialized_data = super(CollectionSerializer, self).to_representation(collection)
@@ -56,11 +57,8 @@ class CollectionSerializer(serializers.ModelSerializer):
         for item in items:
             fields = item.fields
             if isinstance(fields, JSONString):
-                fields = [{key: value} for key, value in json.loads(fields).items()]
-                pass
-            else:
-                fields = []
-            result.append({'name': item.name, 'collection_id': item.collection_id, 'fields': fields})
+                fields = json.loads(fields)
+            result.append({'id': item.id, 'name': item.name, 'collection_id': item.collection_id, 'fields': fields})
         return result
 
 

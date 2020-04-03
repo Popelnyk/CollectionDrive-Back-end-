@@ -39,8 +39,11 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
                 if not validated[0]:
                     return Response(validated[1], status=status.HTTP_400_BAD_REQUEST)
 
+                data_for_response = [request.data['name'], json.loads(request.data['fields'])]
                 item = Item.objects.create(collection=collection, name=request.data['name'], fields=request.data['fields'])
-                return Response({'id': item.id, 'collection_id': collection.id, 'data': serializer.data}, status=status.HTTP_201_CREATED)
+
+                return Response({'id': item.id, 'collection_id': collection.id, 'data': data_for_response},
+                                status=status.HTTP_201_CREATED)
             except JSONDecodeError as e:
                 return Response('Incorrect <fields> atr in request', status=status.HTTP_400_BAD_REQUEST)
         else:
