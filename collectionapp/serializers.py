@@ -1,3 +1,5 @@
+import jsonfield
+from jsonfield.json import JSONString
 from rest_framework import serializers, status
 from rest_framework.fields import DictField, IntegerField, CharField
 from django.db import models
@@ -21,10 +23,10 @@ class CollectionSerializer(serializers.ModelSerializer):
 
     def to_representation(self, collection):
         serialized_data = super(CollectionSerializer, self).to_representation(collection)
-        serialized_data["item_text_fields"] = json.loads(collection.item_text_fields)
-        serialized_data["item_int_fields"] = json.loads(collection.item_int_fields)
-        serialized_data["item_bool_fields"] = json.loads(collection.item_bool_fields)
-        serialized_data["item_date_fields"] = json.loads(collection.item_date_fields)
+        serialized_data['item_text_fields'] = json.loads(collection.item_text_fields)
+        serialized_data['item_int_fields'] = json.loads(collection.item_int_fields)
+        serialized_data['item_bool_fields'] = json.loads(collection.item_bool_fields)
+        serialized_data['item_date_fields'] = json.loads(collection.item_date_fields)
         return serialized_data
 
     def create(self, validated_data):
@@ -52,7 +54,14 @@ class CollectionSerializer(serializers.ModelSerializer):
         items = Item.objects.filter(collection=collection)
         result = []
         for item in items:
-            result.append({'name': item.name, 'collection_id': item.collection_id, 'fields': item.fields.context})
+            fields = item.fields
+            if isinstance(fields, JSONString):
+                fields = json.loads(fields)
+                fields = [{key: value} for key, value in fields.items()]
+                pass
+            else:
+                fields = []
+            result.append({'name': item.name, 'collection_id': item.collection_id, 'fields': fields})
         return result
 
 

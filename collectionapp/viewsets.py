@@ -1,6 +1,7 @@
 from rest_framework import viewsets, mixins, permissions, status
 from rest_framework.decorators import permission_classes, action
 from rest_framework.response import Response
+from rest_framework.utils import json
 
 from CollectionDriveBackEnd.permissions import IsOwnerOfCollectionOrReadonly
 from collectionapp.models import Collection, Item
@@ -26,9 +27,9 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
     @action(methods=['post'], detail=True, permission_classes=[IsOwnerOfCollectionOrReadonly])
     def create_item(self, request, pk=None):
         serializer = ItemSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid() and json.loads(request.data['fields']):
             collection = Collection.objects.get(id=pk)
-            item = Item.objects.create(collection=collection, name=request.data['name'])
+            item = Item.objects.create(collection=collection, name=request.data['name'], fields=request.data['fields'])
             return Response({'id': item.id, 'collection_id': collection.id, 'data': serializer.data},
                             status=status.HTTP_201_CREATED)
         else:

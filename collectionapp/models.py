@@ -1,3 +1,4 @@
+import jsonfield as jsonfield
 from django.db import models
 from rest_framework.fields import ListField, DictField, CharField, IntegerField, \
     JSONField, BooleanField, DateField
@@ -25,4 +26,4 @@ class Theme(models.Model):
 class Item(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    fields = JSONField(allow_null=True, default=None)
+    fields = jsonfield.JSONField(default='{}')
