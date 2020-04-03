@@ -9,6 +9,7 @@ from rest_framework.utils import json
 from CollectionDriveBackEnd.permissions import IsOwnerOfCollectionOrReadonly
 from collectionapp.models import Collection, Item
 from collectionapp.serializers import CollectionSerializer, ItemSerializer
+from collectionapp.validators import validate_fields_from_request_to_fields_in_collection
 
 
 class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -32,12 +33,14 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         serializer = ItemSerializer(data=request.data)
         if serializer.is_valid():
             try:
-                json.loads(request.data['fields'])
                 collection = Collection.objects.get(id=pk)
-                item = Item.objects.create(collection=collection, name=request.data['name'],
-                                           fields=request.data['fields'])
-                return Response({'id': item.id, 'collection_id': collection.id, 'data': serializer.data},
-                                status=status.HTTP_201_CREATED)
+                validated = validate_fields_from_request_to_fields_in_collection(collection, json.loads(request.data['fields']))
+
+                if not validated[0]:
+                    return Response(validated[1], status=status.HTTP_400_BAD_REQUEST)
+
+                item = Item.objects.create(collection=collection, name=request.data['name'], fields=request.data['fields'])
+                return Response({'id': item.id, 'collection_id': collection.id, 'data': serializer.data}, status=status.HTTP_201_CREATED)
             except JSONDecodeError as e:
                 return Response('Incorrect <fields> atr in request', status=status.HTTP_400_BAD_REQUEST)
         else:
