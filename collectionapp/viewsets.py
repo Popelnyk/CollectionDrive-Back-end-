@@ -22,11 +22,21 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         serializer.save(owner=self.request.user)
 
     def get_permissions(self):
-        if self.action == 'create' or self.action == 'update' or self.action == 'delete':
+        if self.action == 'create':
             permission_classes = [permissions.IsAuthenticated]
+        elif self.action == 'destroy' or self.action == 'update':
+            permission_classes = [IsOwnerOfCollectionOrReadonly]
         else:
             permission_classes = [permissions.IsAuthenticatedOrReadOnly]
         return [permission() for permission in permission_classes]
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            collection = Collection.objects.get(id=kwargs['pk'])
+            collection.delete()
+            return Response('deleted', status=status.HTTP_202_ACCEPTED)
+        except Exception as e:
+            return Response('collection does not exist', status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['post'], detail=True, permission_classes=[IsOwnerOfCollectionOrReadonly])
     def create_item(self, request, pk=None):
