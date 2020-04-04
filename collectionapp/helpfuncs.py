@@ -17,9 +17,9 @@ def create_or_add_tags(validated_data, item):
     for data in tags_from_json:
         data = str.lower(data)
 
-        if Tag.objects.filter(name__exact=data).count() == 0:
-            Tag.objects.create(name=data)
+        if Tag.objects.filter(description__exact=data).count() == 0:
+            Tag.objects.create(description=data)
 
-        tag = Tag.objects.get(name__exact=data)
+        tag = Tag.objects.get(description__exact=data)
         tag.item.add(item)
         tag.save()

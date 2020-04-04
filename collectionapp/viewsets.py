@@ -128,3 +128,13 @@ class ItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Destr
 class TagViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        tag = Tag.objects.get(id__exact=kwargs['pk'])
+
+        result = []
+        for item in tag.item.all():
+            result.append({'name': item.name, 'fields': json.loads(item.fields), 'tags': json.loads(item.tags)})
+
+        return Response(result, status=status.HTTP_200_OK)
+
