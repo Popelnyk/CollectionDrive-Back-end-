@@ -64,7 +64,11 @@ class CollectionSerializer(serializers.ModelSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
     collection = serializers.ReadOnlyField(source='collection.id')
+    fields_repr = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
-        fields = ['id', 'collection', 'name', 'fields']
+        fields = ['id', 'collection', 'name', 'fields', 'fields_repr']
+
+    def get_fields_repr(self, item):
+        return json.loads(item.fields)

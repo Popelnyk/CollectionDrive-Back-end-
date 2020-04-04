@@ -6,7 +6,7 @@ from rest_framework.decorators import permission_classes, action
 from rest_framework.response import Response
 from rest_framework.utils import json
 
-from CollectionDriveBackEnd.permissions import IsOwnerOfCollectionOrReadonly
+from CollectionDriveBackEnd.permissions import IsOwnerOfCollectionOrReadonly, IsOwnerAndCanCreateItems
 from collectionapp.models import Collection, Item
 from collectionapp.serializers import CollectionSerializer, ItemSerializer
 from collectionapp.validators import validate_fields_from_request_to_fields_in_collection
@@ -60,9 +60,16 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ItemViewSet(mixins.RetrieveModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class ItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     serializer_class = ItemSerializer
-    #queryset = Item.objects.all()
+    queryset = Item.objects.all()
+
+    def get_permissions(self):
+        if self.action == 'destroy':
+            permission_classes = [IsOwnerAndCanCreateItems]
+        else:
+            permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+        return [permission() for permission in permission_classes]
 
     def destroy(self, request, *args, **kwargs):
         try:

@@ -9,5 +9,5 @@ from authapp.viewsets import CustomUserViewSet
 urlpatterns = [
     path('admin/', admin.site.urls),
     url('auth/', include('authapp.urls')),
-    url('collections/', include('collectionapp.urls'))
+    url('main/', include('collectionapp.urls'))
 ]
