@@ -34,3 +34,8 @@ class Comment(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     description = models.CharField(max_length=400)
     creation_date = models.DateTimeField(auto_now_add=True)
+
+
+class Tag(models.Model):
+    collection = models.ManyToManyField(Item, null=True)
+    name = models.CharField(max_length=50)

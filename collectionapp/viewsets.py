@@ -50,7 +50,8 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
                     return Response(validated[1], status=status.HTTP_400_BAD_REQUEST)
 
                 data_for_response = [request.data['name'], json.loads(request.data['fields'])]
-                item = Item.objects.create(collection=collection, name=request.data['name'], fields=request.data['fields'])
+                item = Item.objects.create(collection=collection, name=request.data['name'],
+                                           fields=request.data['fields'], tags=request.data['tags'])
 
                 return Response({'id': item.id, 'collection_id': collection.id, 'data': data_for_response},
                                 status=status.HTTP_201_CREATED)
@@ -86,7 +87,7 @@ class ItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Destr
             item = Item.objects.get(id='pk')
             comment = Comment.objects.create(owner=self.request.user, item=item,
                                    description=request.data['description'])
-            return Response({'id':comment.id, 'owner':comment.owner, 'owner_id':comment.owner_id,
+            return Response({'id': comment.id, 'owner': comment.owner, 'owner_id': comment.owner_id,
                              'description': comment.description, 'creation_date': comment.creation_date},
                             status=status.HTTP_201_CREATED)
         else:

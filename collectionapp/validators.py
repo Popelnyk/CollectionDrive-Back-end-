@@ -48,3 +48,14 @@ def validate_fields_from_request_to_fields_in_collection(collection, data):
         return False, {'no field {0} for item'.format(e)}
 
     return True, 'ok'
+
+
+def validate_tags(data):
+    try:
+        for item in data:
+            item['name']
+            if not isinstance(item['name'], str):
+                return False, 'name of a tag can only be string type'
+        return True, 'ok'
+    except Exception as e:
+        return False, 'incorrect request, must be [{name:<tag_name>},...]'

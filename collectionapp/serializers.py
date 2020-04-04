@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 import jsonfield
 from jsonfield.json import JSONString
 from rest_framework import serializers, status
@@ -7,8 +9,8 @@ from rest_framework.response import Response
 from rest_framework.utils import json
 
 from authapp.models import CustomUser
-from collectionapp.models import Collection, Theme, Item, Comment
-from collectionapp.validators import validate_item_fields
+from collectionapp.models import Collection, Theme, Item, Comment, Tag
+from collectionapp.validators import validate_item_fields, validate_tags
 
 
 class CollectionSerializer(serializers.ModelSerializer):
@@ -66,13 +68,44 @@ class ItemSerializer(serializers.ModelSerializer):
     collection = serializers.ReadOnlyField(source='collection.id')
     fields_repr = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    tags = serializers.CharField(max_length=500, allow_null=True)
+    tags_repr = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
-        fields = ['id', 'collection', 'name', 'fields', 'fields_repr', 'comments']
+        fields = ['id', 'collection', 'name', 'fields', 'fields_repr', 'comments', 'tags', 'tags_repr']
+
+    def create(self, validated_data):
+        item = Item.objects.create(**validated_data)
+
+        try:
+            tags_from_json = json.loads(validated_data.get('tags'))
+        except JSONDecodeError as e:
+            return Response('incorrect tags, must be [{name:<tag_name>},...]', status=status.HTTP_400_BAD_REQUEST)
+
+        validated = validate_tags(tags_from_json)
+        if not validated[0]:
+            return Response(validated[1], status=status.HTTP_400_BAD_REQUEST)
+
+        for item in tags_from_json:
+            item['name'] = str.lower(item['name'])
+            if Tag.objects.filter(name__exact=item['name']).count() > 0:
+                tag = Tag.objects.get(name__exact=item['name'])
+                tag.collection.add(item)
+                tag.save()
+            else:
+                Tag.objects.create(name=item['name'])
+                tag = Tag.objects.get(name__exact=item['name'])
+                tag.collection.add(item)
+                tag.save()
+
+        return item
 
     def get_fields_repr(self, item):
         return json.loads(item.fields)
+
+    def get_tags_repr(self, item):
+        return json.loads(item.tags)
 
     def get_comments(self, item):
         result = []
