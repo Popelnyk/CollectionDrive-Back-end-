@@ -1,7 +1,7 @@
 from json import JSONDecodeError
 
 import jsonfield
-from rest_framework import viewsets, mixins, permissions, status
+from rest_framework import viewsets, mixins, permissions, status, filters
 from rest_framework.decorators import permission_classes, action
 from rest_framework.response import Response
 from rest_framework.utils import json
@@ -18,6 +18,8 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
                         viewsets.GenericViewSet):
     serializer_class = CollectionSerializer
     queryset = Collection.objects.all()
+    search_fields = ['name', 'theme_name', 'description', 'item__name', 'item__tags', 'item__comment__description']
+    filter_backends = (filters.SearchFilter,)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
