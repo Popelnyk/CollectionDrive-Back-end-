@@ -6,9 +6,9 @@ from rest_framework.decorators import permission_classes, action
 from rest_framework.response import Response
 from rest_framework.utils import json
 
-from CollectionDriveBackEnd.permissions import IsOwnerOfCollectionOrReadonly, IsOwnerAndCanCreateItems
-from collectionapp.models import Collection, Item
-from collectionapp.serializers import CollectionSerializer, ItemSerializer
+from CollectionDriveBackEnd.permissions import IsOwnerOfCollectionOrReadonly, IsOwnerAndCanCreateItems, IsOwnerOfComment
+from collectionapp.models import Collection, Item, Comment
+from collectionapp.serializers import CollectionSerializer, ItemSerializer, CommentSerializer
 from collectionapp.validators import validate_fields_from_request_to_fields_in_collection
 
 
@@ -78,3 +78,25 @@ class ItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Destr
             return Response('deleted', status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             return Response('item does not exist', status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['post'], detail=True, permission_classes=[permissions.IsAuthenticated])
+    def add_comment(self, request, pk=None):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            item = Item.objects.get(id='pk')
+            comment = Comment.objects.create(owner=self.request.user, item=item,
+                                   description=request.data['description'])
+            return Response({'id':comment.id, 'owner':comment.owner, 'owner_id':comment.owner_id,
+                             'description': comment.description, 'creation_date': comment.creation_date},
+                            status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['delete'], detail=True, permission_classes=[IsOwnerOfComment])
+    def delete_comment(self, request, pk=None):
+        try:
+            comment = Comment.objects.get(id='pk')
+            comment.delete()
+            return Response('deleted', status=status.HTTP_202_ACCEPTED)
+        except Exception as e:
+            return Response('comment does not exist', status=status.HTTP_400_BAD_REQUEST)

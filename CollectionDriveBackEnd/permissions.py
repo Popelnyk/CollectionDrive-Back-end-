@@ -1,7 +1,7 @@
 from rest_framework import permissions, status
 from rest_framework.response import Response
 
-from collectionapp.models import Collection, Item
+from collectionapp.models import Collection, Item, Comment
 
 
 class IsOwnerOfUserOrReadOnly(permissions.BasePermission):
@@ -32,3 +32,14 @@ class IsOwnerAndCanCreateItems(permissions.BasePermission):
             return item.collection.owner == request.user
         except Exception as e:
             return Response('item does not exist', status=status.HTTP_400_BAD_REQUEST)
+
+
+class IsOwnerOfComment(permissions.BasePermission):
+    def has_permission(self, request, view):
+        try:
+            comment_id = view.kwargs['pk']
+            comment = Comment.objects.get()
+
+            return comment.owner == request.user
+        except Exception as e:
+            return Response('comment does not exist', status=status.HTTP_400_BAD_REQUEST)

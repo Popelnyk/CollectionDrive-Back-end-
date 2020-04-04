@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.utils import json
 
 from authapp.models import CustomUser
-from collectionapp.models import Collection, Theme, Item
+from collectionapp.models import Collection, Theme, Item, Comment
 from collectionapp.validators import validate_item_fields
 
 
@@ -65,10 +65,30 @@ class CollectionSerializer(serializers.ModelSerializer):
 class ItemSerializer(serializers.ModelSerializer):
     collection = serializers.ReadOnlyField(source='collection.id')
     fields_repr = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
-        fields = ['id', 'collection', 'name', 'fields', 'fields_repr']
+        fields = ['id', 'collection', 'name', 'fields', 'fields_repr', 'comments']
 
     def get_fields_repr(self, item):
         return json.loads(item.fields)
+
+    def get_comments(self, item):
+        result = []
+        comments = Comment.objects.filter(item=item)
+        for data in comments:
+            result.append({'id': data.id, 'owner': data.owner, 'owner_id': data.owner_id,
+                           'description': data.description, 'creation_date': data.creation_date})
+        return result
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    owner_id = serializers.ReadOnlyField(source='owner.id')
+    item = serializers.ReadOnlyField(source='item.id')
+
+    class Meta:
+        model = Comment
+        creation_date = serializers.DateTimeField(format='%Y-%m-%d')
+        fields = ['id', 'owner', 'item', 'description', 'creation_date']

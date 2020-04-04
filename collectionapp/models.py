@@ -27,3 +27,10 @@ class Item(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     fields = jsonfield.JSONField(default='{}')
+
+
+class Comment(models.Model):
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    description = models.CharField(max_length=400)
+    creation_date = models.DateTimeField(auto_now_add=True)
