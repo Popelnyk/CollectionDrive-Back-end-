@@ -26,6 +26,7 @@ class Theme(models.Model):
 class Item(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
+    tags = models.CharField(max_length=500, null=True, default='')
     fields = jsonfield.JSONField(default='{}')
 
 
@@ -37,5 +38,5 @@ class Comment(models.Model):
 
 
 class Tag(models.Model):
-    collection = models.ManyToManyField(Item, null=True)
+    item = models.ManyToManyField(Item, null=True)
     name = models.CharField(max_length=50)

@@ -10,7 +10,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'total_collections', 'collections']
+        fields = ['id', 'username', 'email', 'lang', 'total_collections', 'collections']
 
     def get_collections(self, user):
         collections = Collection.objects.filter(owner=user)

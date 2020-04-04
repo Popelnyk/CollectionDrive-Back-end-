@@ -17,12 +17,14 @@ class CollectionSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     owner_id = serializers.ReadOnlyField(source='owner.id')
     items = serializers.SerializerMethodField()
+    total_of_items = serializers.SerializerMethodField()
 
     class Meta:
         model = Collection
         creation_date = serializers.DateTimeField(format='%Y-%m-%d')
         fields = ['id', 'owner', 'owner_id', 'name', 'theme_name', 'description', 'creation_date',
-                  'item_text_fields', 'item_int_fields', 'item_bool_fields', 'item_date_fields', 'items']
+                  'item_text_fields', 'item_int_fields', 'item_bool_fields',
+                  'item_date_fields', 'total_of_items', 'items']
 
     def to_representation(self, collection):
         serialized_data = super(CollectionSerializer, self).to_representation(collection)
@@ -63,6 +65,9 @@ class CollectionSerializer(serializers.ModelSerializer):
             result.append({'id': item.id, 'name': item.name, 'collection_id': item.collection_id, 'fields': fields})
         return result
 
+    def get_total_of_items(self, collection):
+        return Item.objects.filter(collection=collection).count()
+
 
 class ItemSerializer(serializers.ModelSerializer):
     collection = serializers.ReadOnlyField(source='collection.id')
@@ -87,16 +92,16 @@ class ItemSerializer(serializers.ModelSerializer):
         if not validated[0]:
             return Response(validated[1], status=status.HTTP_400_BAD_REQUEST)
 
-        for item in tags_from_json:
-            item['name'] = str.lower(item['name'])
-            if Tag.objects.filter(name__exact=item['name']).count() > 0:
-                tag = Tag.objects.get(name__exact=item['name'])
-                tag.collection.add(item)
+        for data in tags_from_json:
+            data['name'] = str.lower(data['name'])
+            if Tag.objects.filter(name__exact=data['name']).count() > 0:
+                tag = Tag.objects.get(name__exact=data['name'])
+                tag.item.add(item)
                 tag.save()
             else:
-                Tag.objects.create(name=item['name'])
-                tag = Tag.objects.get(name__exact=item['name'])
-                tag.collection.add(item)
+                Tag.objects.create(name=data['name'])
+                tag = Tag.objects.get(name__exact=data['name'])
+                tag.item.add(item)
                 tag.save()
 
         return item
@@ -105,7 +110,10 @@ class ItemSerializer(serializers.ModelSerializer):
         return json.loads(item.fields)
 
     def get_tags_repr(self, item):
-        return json.loads(item.tags)
+        if item.tags:
+            return json.loads(item.tags)
+        else:
+            return []
 
     def get_comments(self, item):
         result = []

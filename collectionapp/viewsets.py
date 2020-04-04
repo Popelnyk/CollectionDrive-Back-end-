@@ -60,6 +60,17 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(methods=['get'], detail=False)
+    def best(self, request):
+        collections = Collection.objects.all()
+        result_bad = sorted(collections, key=lambda collection: Item.objects.filter(collection=collection).count())
+        result = []
+        for item in result_bad:
+            result.append({'id': item.id, 'name': item.name, 'theme': item.theme_name,
+                           'description': item.description, 'creation_date': item.creation_date,
+                           'total_of_items': Item.objects.filter(collection=item).count()})
+        return Response(reversed(result), status=status.HTTP_200_OK)
+
 
 class ItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     serializer_class = ItemSerializer
@@ -86,7 +97,7 @@ class ItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Destr
         if serializer.is_valid():
             item = Item.objects.get(id='pk')
             comment = Comment.objects.create(owner=self.request.user, item=item,
-                                   description=request.data['description'])
+                                             description=request.data['description'])
             return Response({'id': comment.id, 'owner': comment.owner, 'owner_id': comment.owner_id,
                              'description': comment.description, 'creation_date': comment.creation_date},
                             status=status.HTTP_201_CREATED)

@@ -20,12 +20,12 @@ class CustomUserViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
                 user = CustomUser.objects.create_user(username=request.data['username'],
                                                       email=request.data['email'],
                                                       password=request.data['password'])
-                return Response({'id': user.id, 'username': user.username, 'email': user.email},
+                return Response({'id': user.id, 'username': user.username, 'email': user.email, 'lang': user.lang},
                                 status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except MultiValueDictKeyError as e:
-            return Response(data={'password': 'This field is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={'password and lang': 'These fields are required'}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'], permission_classes=[IsOwnerOfUserOrReadOnly])
     def set_password(self, request, pk):
