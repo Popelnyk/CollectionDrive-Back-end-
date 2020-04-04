@@ -60,10 +60,14 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-'''
-class ItemViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
-                  mixins.RetrieveModelMixin, mixins.DestroyModelMixin,
-                  viewsets.GenericViewSet):
+class ItemViewSet(mixins.RetrieveModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     serializer_class = ItemSerializer
-    queryset = Item.objects.all()
-'''
+    #queryset = Item.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            item = Item.objects.get(id=kwargs['pk'])
+            item.delete()
+            return Response('deleted', status=status.HTTP_202_ACCEPTED)
+        except Exception as e:
+            return Response('item does not exist', status=status.HTTP_400_BAD_REQUEST)
