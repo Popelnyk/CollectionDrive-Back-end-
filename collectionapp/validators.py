@@ -52,10 +52,11 @@ def validate_fields_from_request_to_fields_in_collection(collection, data):
 
 def validate_tags(data):
     try:
+        if not isinstance(data, list):
+            return False, 'tags must be type of list'
         for item in data:
-            item['name']
-            if not isinstance(item['name'], str):
-                return False, 'name of a tag can only be string type'
+            if not isinstance(item, str) or len(item) >= 50:
+                return False, 'tag must be str, tag must be less than 50 symbols'
         return True, 'ok'
     except Exception as e:
         return False, 'incorrect request, must be [{name:<tag_name>},...]'

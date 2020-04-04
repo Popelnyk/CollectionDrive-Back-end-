@@ -7,9 +7,10 @@ from rest_framework.response import Response
 from rest_framework.utils import json
 
 from CollectionDriveBackEnd.permissions import IsOwnerOfCollectionOrReadonly, IsOwnerAndCanCreateItems, IsOwnerOfComment
-from collectionapp.models import Collection, Item, Comment
-from collectionapp.serializers import CollectionSerializer, ItemSerializer, CommentSerializer
-from collectionapp.validators import validate_fields_from_request_to_fields_in_collection
+from collectionapp.helpfuncs import create_or_add_tags
+from collectionapp.models import Collection, Item, Comment, Tag
+from collectionapp.serializers import CollectionSerializer, ItemSerializer, CommentSerializer, TagSerializer
+from collectionapp.validators import validate_fields_from_request_to_fields_in_collection, validate_tags
 
 
 class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -45,13 +46,21 @@ class CollectionViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             try:
                 collection = Collection.objects.get(id=pk)
                 validated = validate_fields_from_request_to_fields_in_collection(collection, json.loads(request.data['fields']))
+                validated_tags = validate_tags(json.loads(request.data['tags']))
 
                 if not validated[0]:
                     return Response(validated[1], status=status.HTTP_400_BAD_REQUEST)
 
-                data_for_response = [request.data['name'], json.loads(request.data['fields'])]
+                if not validated_tags[0]:
+                    return Response(validated_tags[1], status=status.HTTP_400_BAD_REQUEST)
+
                 item = Item.objects.create(collection=collection, name=request.data['name'],
-                                           fields=request.data['fields'], tags=request.data['tags'])
+                                           tags=request.data['tags'], fields=request.data['fields'])
+
+                create_or_add_tags(request.data['tags'], item)
+
+                data_for_response = {'name': request.data['name'], 'tags': json.loads(request.data['tags']),
+                                     'fields': json.loads(request.data['fields'])}
 
                 return Response({'id': item.id, 'collection_id': collection.id, 'data': data_for_response},
                                 status=status.HTTP_201_CREATED)
@@ -95,10 +104,12 @@ class ItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Destr
     def add_comment(self, request, pk=None):
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            item = Item.objects.get(id='pk')
+            item = Item.objects.get(id=pk)
+
             comment = Comment.objects.create(owner=self.request.user, item=item,
                                              description=request.data['description'])
-            return Response({'id': comment.id, 'owner': comment.owner, 'owner_id': comment.owner_id,
+
+            return Response({'id': comment.id, 'owner': comment.owner.username, 'owner_id': comment.owner_id,
                              'description': comment.description, 'creation_date': comment.creation_date},
                             status=status.HTTP_201_CREATED)
         else:
@@ -112,3 +123,8 @@ class ItemViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Destr
             return Response('deleted', status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             return Response('comment does not exist', status=status.HTTP_400_BAD_REQUEST)
+
+
+class TagViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()

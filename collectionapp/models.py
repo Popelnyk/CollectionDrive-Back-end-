@@ -38,5 +38,5 @@ class Comment(models.Model):
 
 
 class Tag(models.Model):
-    item = models.ManyToManyField(Item, null=True)
-    name = models.CharField(max_length=50)
+    item = models.ManyToManyField(Item)
+    description = models.CharField(max_length=50, unique=True)

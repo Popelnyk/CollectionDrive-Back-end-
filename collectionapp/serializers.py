@@ -26,14 +26,6 @@ class CollectionSerializer(serializers.ModelSerializer):
                   'item_text_fields', 'item_int_fields', 'item_bool_fields',
                   'item_date_fields', 'total_of_items', 'items']
 
-    def to_representation(self, collection):
-        serialized_data = super(CollectionSerializer, self).to_representation(collection)
-        serialized_data['item_text_fields'] = json.loads(collection.item_text_fields)
-        serialized_data['item_int_fields'] = json.loads(collection.item_int_fields)
-        serialized_data['item_bool_fields'] = json.loads(collection.item_bool_fields)
-        serialized_data['item_date_fields'] = json.loads(collection.item_date_fields)
-        return serialized_data
-
     def create(self, validated_data):
         validate_item_fields(json.loads(validated_data.get('item_text_fields')))
         validate_item_fields(json.loads(validated_data.get('item_int_fields')))
@@ -55,14 +47,26 @@ class CollectionSerializer(serializers.ModelSerializer):
 
         return collection
 
+    def to_representation(self, collection):
+        serialized_data = super(CollectionSerializer, self).to_representation(collection)
+        serialized_data['item_text_fields'] = json.loads(collection.item_text_fields)
+        serialized_data['item_int_fields'] = json.loads(collection.item_int_fields)
+        serialized_data['item_bool_fields'] = json.loads(collection.item_bool_fields)
+        serialized_data['item_date_fields'] = json.loads(collection.item_date_fields)
+        return serialized_data
+
     def get_items(self, collection):
         items = Item.objects.filter(collection=collection)
         result = []
         for item in items:
             fields = item.fields
+            tags = []
             if isinstance(fields, JSONString):
                 fields = json.loads(fields)
-            result.append({'id': item.id, 'name': item.name, 'collection_id': item.collection_id, 'fields': fields})
+            if len(item.tags) > 0:
+                tags = json.loads(item.tags)
+            result.append({'id': item.id, 'name': item.name, 'collection_id': item.collection_id, 'fields': fields,
+                           'tags': tags})
         return result
 
     def get_total_of_items(self, collection):
@@ -73,38 +77,17 @@ class ItemSerializer(serializers.ModelSerializer):
     collection = serializers.ReadOnlyField(source='collection.id')
     fields_repr = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
-    tags = serializers.CharField(max_length=500, allow_null=True)
+    tags = serializers.CharField(max_length=500, allow_null=True, write_only=True)
     tags_repr = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
         fields = ['id', 'collection', 'name', 'fields', 'fields_repr', 'comments', 'tags', 'tags_repr']
 
-    def create(self, validated_data):
-        item = Item.objects.create(**validated_data)
-
-        try:
-            tags_from_json = json.loads(validated_data.get('tags'))
-        except JSONDecodeError as e:
-            return Response('incorrect tags, must be [{name:<tag_name>},...]', status=status.HTTP_400_BAD_REQUEST)
-
-        validated = validate_tags(tags_from_json)
-        if not validated[0]:
-            return Response(validated[1], status=status.HTTP_400_BAD_REQUEST)
-
-        for data in tags_from_json:
-            data['name'] = str.lower(data['name'])
-            if Tag.objects.filter(name__exact=data['name']).count() > 0:
-                tag = Tag.objects.get(name__exact=data['name'])
-                tag.item.add(item)
-                tag.save()
-            else:
-                Tag.objects.create(name=data['name'])
-                tag = Tag.objects.get(name__exact=data['name'])
-                tag.item.add(item)
-                tag.save()
-
-        return item
+    def to_representation(self, item):
+        serialized_data = super(ItemSerializer, self).to_representation(item)
+        serialized_data.pop('fields')
+        return serialized_data
 
     def get_fields_repr(self, item):
         return json.loads(item.fields)
@@ -119,7 +102,7 @@ class ItemSerializer(serializers.ModelSerializer):
         result = []
         comments = Comment.objects.filter(item=item)
         for data in comments:
-            result.append({'id': data.id, 'owner': data.owner, 'owner_id': data.owner_id,
+            result.append({'id': data.id, 'owner': data.owner.username, 'owner_id': data.owner_id,
                            'description': data.description, 'creation_date': data.creation_date})
         return result
 
@@ -132,4 +115,10 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         creation_date = serializers.DateTimeField(format='%Y-%m-%d')
-        fields = ['id', 'owner', 'item', 'description', 'creation_date']
+        fields = ['id', 'owner', 'owner_id', 'item', 'description', 'creation_date']
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['id', 'description']
