@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4b3e2888-3fb6-4cf5-80ba-3eddcd0ae018" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/collectionapp/viewsets.py" beforeDir="false" afterPath="$PROJECT_DIR$/collectionapp/viewsets.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -277,7 +276,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586043446904</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="searching by collection name,description,item's names, item's comments description added">
+      <created>1586044529268</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1586044529269</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -313,6 +319,7 @@
     <MESSAGE value="user lang" />
     <MESSAGE value="tags" />
     <MESSAGE value="tags, filtering by tag" />
-    <option name="LAST_COMMIT_MESSAGE" value="tags, filtering by tag" />
+    <MESSAGE value="searching by collection name,description,item's names, item's comments description added" />
+    <option name="LAST_COMMIT_MESSAGE" value="searching by collection name,description,item's names, item's comments description added" />
   </component>
 </project>
